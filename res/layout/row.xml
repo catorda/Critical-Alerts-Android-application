@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ android:orientation="horizontal"
+ android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="#FFFFFF"
+  android:padding="3dp">
+  <ImageView android:id="@+id/PSIRTstatus" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:layout_toLeftOf="@+id/PSIRTtitle" 
+			android:src="@drawable/error"
+			android:paddingLeft="5dp"
+			android:paddingRight="5dp"/>
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" >
+		<TextView android:id="@id/PSIRTtitle" 
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:text="Cisco NX-OS Malformed IP Packet Denial of Service Vulnerability"
+			android:layout_toLeftOf="@+id/PSIRTdate"
+			android:background="#FFFFFF"
+			android:textColor="#606060" android:gravity="left"/>
+		<TextView android:id="@+id/PSIRTdate"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent"
+			android:layout_alignParentRight="true"
+			android:text="test"
+			android:background="#FFFFFF"
+			android:textColor="#606060" android:paddingLeft="4dp"/>
+	</RelativeLayout>
+</LinearLayout>

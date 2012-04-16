@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, AlertListActivity!</string>
+    <string name="app_name">CriticalAlerts</string>
+    <string name="refresh">Refresh</string>
+    <string name="username_label_string">Username:</string>
+    <string name="deviceid_label_string">Device ID: </string>
+    <string name="password_label_string">Password: </string>
+    <string name="customerid_label_string">Customer ID: </string>
+    <string name="submit">Submit</string>
+    <string name="clear">Clear</string>
+    <string name="psirtdetail_headline">Headline: </string>
+    <string name="psirtdetail_id">Alert ID </string>
+    <string name="psirtdetail_firstpublished">First published </string>
+    <string name="psirtdetail_lastupdated">Last Updated </string>
+    <string name="psirtdetail_externalurl_button">Go to external webpage for more details </string>
+    <string name="psirtdetail_new">New</string>
+    <string name="psirtdetail_old">Old</string>
+    <string name="psirtdetail_email_button">Notify Correspondents</string>
+    <string name="psirtdetail_matchreason">Match Reason: </string>
+</resources>

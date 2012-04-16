@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+  <TextView
+  	android:id="@+id/username_label"
+  	android:layout_width="match_parent"
+  	android:layout_marginLeft="10sp"
+  	android:layout_height="wrap_content"
+  	android:text="@string/username_label_string" />
+  <EditText 
+  	android:id="@+id/usernameInput"
+  	android:layout_width="match_parent"
+  	android:layout_marginLeft="15sp"
+  	android:layout_marginRight="15sp"
+  	android:layout_height="wrap_content" />
+  <TextView
+  	android:id="@+id/password_label"
+  	android:layout_width="match_parent"
+  	android:layout_marginLeft="10sp"
+  	android:layout_height="wrap_content"
+  	android:text="@string/password_label_string" />
+  <EditText 
+  	android:id="@+id/passwordInput"
+  	android:layout_width="match_parent"
+  	android:layout_marginLeft="15sp"
+  	android:layout_marginRight="15sp"
+  	android:password="true"
+  	android:layout_height="wrap_content" />
+  <LinearLayout 
+  	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:orientation="horizontal" 
+  	android:layout_width="match_parent"
+  	android:layout_height="match_parent"
+  	android:layout_marginLeft="17sp"
+  	android:layout_marginRight="17sp"
+  	android:layout_marginTop="10sp">
+  	<Button 
+  	  android:id="@+id/submitButton"
+  	  android:text="@string/submit"
+  	  android:layout_width="wrap_content"
+  	  android:layout_height="wrap_content"
+  	  android:layout_weight=".4"/>
+  	<Button 
+  	  android:id="@+id/clearButton"
+  	  android:text="@string/clear"
+  	  android:layout_width="wrap_content"
+  	  android:layout_height="wrap_content"
+  	  android:layout_weight=".4"/>
+  	</LinearLayout>
+</LinearLayout>

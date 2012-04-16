@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_height="wrap_content" android:layout_width="wrap_content"
+  android:orientation="vertical"
+  android:padding="5sp"
+  android:background="#ffffffff">
+<TextView 
+android:id="@+id/widget_title"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:textColor="#ff000000"
+android:text="@string/app_name"></TextView>
+<TextView 
+android:id="@+id/widget_psirtheadline"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:textColor="#ff000000"
+android:text="@string/app_name"></TextView>
+</LinearLayout>

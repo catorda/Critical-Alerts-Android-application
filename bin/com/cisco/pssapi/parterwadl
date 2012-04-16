@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<application xmlns="http://wadl.dev.java.net/2009/02">
+    <doc xmlns:jersey="http://jersey.java.net/" jersey:generatedBy="Jersey: 1.9.1 09/14/2011 02:36 PM"/>
+    <grammars>
+        <include href="application.wadl/xsd0.xsd">
+            <doc title="Generated" xml:lang="en"/>
+        </include>
+    </grammars>
+    <resources base="http://factory-dev01.cisco.com:8711/PartnerAPI-dev01/alertServiceRS/">
+        <resource path="swEoxAlert">
+            <resource path="getSwEox">
+                <method id="getSwEox" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="getSwEoxBulletin">
+                <method id="getSwEoxBulletin" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+        </resource>
+        <resource path="/verifySchDevice">
+            <method id="verifySchDevice" name="POST">
+                <request>
+                    <representation mediaType="application/xml"/>
+                </request>
+                <response>
+                    <representation mediaType="application/xml"/>
+                </response>
+            </method>
+        </resource>
+        <resource path="psirtAlert">
+            <resource path="getPsirt">
+                <method id="getPsirt" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="getPsirtDetails">
+                <method id="getPsirtDetails" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+        </resource>
+        <resource path="partnerapi">
+            <resource path="getKnownBugsForDevice">
+                <method id="getKnownBugsForDevice" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="getBugDetails">
+                <method id="getBugDetails" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="getAffectedDevices">
+                <method id="getAffectedDevices" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+        </resource>
+        <resource path="2.0/InventoryService">
+            <resource path="inventory/customerIds">
+                <method id="getCustomers" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation xmlns:ns2="http://www.cisco.com/InventoryService" element="ns2:customer" mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="inventory/systemDetails">
+                <method id="getNetworkElementDetails" name="POST">
+                    <request>
+                        <representation xmlns:ns2="http://www.cisco.com/InventoryService" element="ns2:networkElementIdsRequest" mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="inventory/customerInventoryDetails">
+                <method id="getCustomerInventoryDetails" name="POST">
+                    <request>
+                        <representation xmlns:ns2="http://www.cisco.com/InventoryService" element="ns2:customerInventoryDetail" mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation xmlns:ns2="http://www.cisco.com/InventoryService" element="ns2:customerInventoryDetailResponse" mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="inventory/customerInventoryIds">
+                <method id="getCustomersInventoryIds" name="POST">
+                    <request>
+                        <representation xmlns:ns2="http://www.cisco.com/InventoryService" element="ns2:customerIdsRequest" mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation xmlns:ns2="http://www.cisco.com/InventoryService" element="ns2:customersInventoryResponse" mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="inventory/updatedNEs">
+                <method id="getUpdatedNetworkElementsIds" name="GET">
+                    <request>
+                        <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="customerId" style="query" type="xs:string"/>
+                        <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="changedSince" style="query" type="xs:string"/>
+                    </request>
+                    <response>
+                        <representation xmlns:ns2="http://www.cisco.com/InventoryService" element="ns2:networkElementIdsResponse" mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="inventory/newNEs">
+                <method id="getNewNetworkElementsIds" name="GET">
+                    <request>
+                        <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="customerId" style="query" type="xs:string"/>
+                        <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="changedSince" style="query" type="xs:string"/>
+                    </request>
+                    <response>
+                        <representation xmlns:ns2="http://www.cisco.com/InventoryService" element="ns2:networkElementIdsResponse" mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="inventory/deletedNEs">
+                <method id="getDeletedNetworkElementsIds" name="GET">
+                    <request>
+                        <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="customerId" style="query" type="xs:string"/>
+                        <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="deletedSince" style="query" type="xs:string"/>
+                    </request>
+                    <response>
+                        <representation xmlns:ns2="http://www.cisco.com/InventoryService" element="ns2:networkElementIdsResponse" mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+        </resource>
+        <resource path="isAlert">
+            <resource path="getISAlerts">
+                <method id="getISAlerts" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="getISAlertDetails">
+                <method id="getISAlertDetails" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+        </resource>
+        <resource path="hwEoxAlert">
+            <resource path="getHwEoxMigrationPIDs">
+                <method id="getHwEoxMigrationPIDs" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="getHwEox">
+                <method id="getHwEox" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="getHwEoxBulletin">
+                <method id="getHwEoxBulletin" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+        </resource>
+        <resource path="fnAlert">
+            <resource path="getFN">
+                <method id="getFN" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="getFNDetails">
+                <method id="getFNDetails" name="POST">
+                    <request>
+                        <representation mediaType="application/xml"/>
+                    </request>
+                    <response>
+                        <representation mediaType="application/xml"/>
+                    </response>
+                </method>
+            </resource>
+        </resource>
+    </resources>
+</application>
