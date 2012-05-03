@@ -6,8 +6,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -95,11 +97,12 @@ public class PSIRTDetailActivity extends Activity implements OnClickListener {
 			body += url;
 			
 			String subject = "[CriticalAlerts] " + headline.getText();
-			
+			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			Intent emailIntent = new Intent();
 			emailIntent.setClass(arg0.getContext(), SendEmailActivity.class); 
 			emailIntent.putExtra("subject", subject); 
 			emailIntent.putExtra("body", body);
+			emailIntent.putExtra("email", settings.getString("emails", ""));
 
 			
 			this.startActivityForResult(emailIntent, EMAIL_REQUEST);

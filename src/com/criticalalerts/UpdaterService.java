@@ -38,10 +38,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -65,12 +69,11 @@ public class UpdaterService extends Service {
 	private MyServiceBinder myServiceBinder = new MyServiceBinder();
 	protected Database psirtDatabase; 
 	Context context;
-	protected AppWidgetManager appWidgetManager;
-	int[] allWidgetIds;
 	ComponentName thisWidget;
 	Intent intent;
 	private UpdaterServiceBroadcastReceiver broadcastReceiver; 
 	private NotificationManager nm; 
+	public static boolean[] checked = {true, true, true};
 	
 	public void onCreate() {
 		super.onCreate();
@@ -89,46 +92,13 @@ public class UpdaterService extends Service {
 		super.onStart(intent, startId);
 		//String clientToken = TokenClient.getToken("dmI5ZngzajM1bTJoamtrc2h5c3I0ZmI0OlhrVGtrd05ENzJ4REtzenhQNFRLZ0ZWUw==", "GES9Y2wcSY96NVUxFH5DVsrd", "https://cloudsso-test2.cisco.com/as/token.oauth2");
 		this.intent = intent;
-		//Setting up Desktop Widget manager 
-		
-		//InventoryServiceClient inventoryServiceClient = new InventoryServiceClient();
-		//Log.i(TAG, "Response: " + inventoryServiceClient.getCustomersInventory(clientToken));
-		
-		Random rand = new Random(); 
-		
+
 		psirtDatabase = new Database(context);
 		psirtDatabase.open();
 		psirtDatabase.close();
 		
-		//Put psirt in a database
-		
-		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy MMMMM d HH:mm z");
-		Date now = new Date(); 
-		
-		PsirtServiceClient psc = new PsirtServiceClient("http://192.168.1.109:5968/jersey/getPsirts");
-		ArrayList<PSIRT> newPsirts = null;
-		try {
-			newPsirts = psc.getPsirts();
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			Log.e(TAG, e.toString());
-			Toast.makeText(getApplicationContext(), "Could not connect to web service to check for new alerts", Toast.LENGTH_SHORT);
-		}
-		// Load old PSIRTs from database to compare them 
-		int num = addNewPsirts(newPsirts);
-		Log.i(TAG, "Number of Psirts added: " + num);
-		if(num > 0) {
-			Intent i = new Intent(this, AlertListActivity.class); 
-			PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0); 
-			String body = num + " Alerts received."; 
-			String title = "New Alerts"; 
-			Notification n = new Notification(R.drawable.error, body, System.currentTimeMillis());
-			n.setLatestEventInfo(this, title, body, pi); 
-			n.defaults = Notification.DEFAULT_ALL;
-			nm.notify(UNIQUE_NOTIFICATION_ID, n);
-		}
-		
+		Random rand = new Random(); 
+				
 		this.runFlag = true; 
 		if(!this.updater.isAlive()) {
 			this.updater.start();
@@ -172,35 +142,12 @@ public class UpdaterService extends Service {
 			
 			while(us.runFlag) {
 				try {
-					
-					AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context.getApplicationContext());
-					allWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-					thisWidget = new ComponentName(getApplicationContext(), DesktopWidgetProvider.class);
-					
-					RemoteViews remoteViews = new RemoteViews(context.getApplicationContext().getPackageName(),
-							R.layout.widget_layout);
-					remoteViews.setTextViewText(R.id.widget_psirtheadline, "New Psirts");
-					
-					// Register an onClickListener 
-					Intent clickIntent = new Intent(context.getApplicationContext(), DesktopWidgetProvider.class);
-					
-					clickIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-					clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, allWidgetIds);
-					
-					PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-					remoteViews.setOnClickPendingIntent(R.id.widget_psirtheadline, pendingIntent);
-					
-					appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-					// Send SOAP message
-					
-					// Receive SOAP response message
-					
-					// Check dates 
-					
-						// If new PSIRT is found, download and add to DB 
-						// send broadcast to Application 
-					
-						// If no new PSIRT is found do nothing
+					try {
+						retrievePsirts();
+					} catch (SocketException e) {
+						Looper.prepare();
+						Toast.makeText(getApplicationContext(), "Could not connect to web service to check for new alerts", Toast.LENGTH_SHORT);
+					}
 					Thread.sleep(60000);
 				} catch (InterruptedException e) {
 					us.runFlag = false;
@@ -209,6 +156,39 @@ public class UpdaterService extends Service {
 		}
 		
 		
+	}
+	
+	public void retrievePsirts() throws SocketException {
+		
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy MMMMM d HH:mm z");
+		Date now = new Date(); 
+		
+		PsirtServiceClient psc = new PsirtServiceClient("http://192.168.1.108:8080/jersey/getPsirts");
+		ArrayList<PSIRT> newPsirts = null;
+		try {
+			newPsirts = psc.getPsirts();
+		} catch (SocketException e) {
+			e.printStackTrace();
+			Log.e(TAG, e.toString());
+			throw new SocketException();
+		}
+		// Load old PSIRTs from database to compare them 
+		int num = addNewPsirts(newPsirts);
+		Log.i(TAG, "Number of Psirts added: " + num);
+		
+		// Get settings to see if we need to send a notification
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		
+		if(num > 0 && settings.getBoolean("notification", true)) {
+			Intent i = new Intent(this, AlertListActivity.class); 
+			PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0); 
+			String body = num + " Alerts received."; 
+			String title = "New Alerts"; 
+			Notification n = new Notification(R.drawable.error, body, System.currentTimeMillis());
+			n.setLatestEventInfo(this, title, body, pi); 
+			n.defaults = Notification.DEFAULT_ALL;
+			nm.notify(UNIQUE_NOTIFICATION_ID, n);
+		}
 	}
 	
 	/**
@@ -312,6 +292,41 @@ public class UpdaterService extends Service {
 		return list;
 	}
 	
+	public ArrayList<PSIRT>getFilteredPsirts(boolean unresolved, boolean assigned, boolean resolved) {
+		ArrayList<String> filter = new ArrayList<String>(); 
+		if(resolved == true) { filter.add(DatabaseConstants.RESOLVED); }
+		if(assigned == true) { filter.add(DatabaseConstants.ASSIGNED);	}
+		if(unresolved==true) { filter.add(DatabaseConstants.UNRESOLVED); }
+		
+		psirtDatabase.open(); 
+		ArrayList<PSIRT> list = new ArrayList<PSIRT>();
+		Cursor c = psirtDatabase.getPSIRTs();
+		if(c.moveToFirst()) {
+			do {
+				PSIRT p = new PSIRT(); 
+				p.setExternalURL(c.getString(c.getColumnIndex(DatabaseConstants.COL_EXTERNAL_URL)));
+				p.setHeadline(c.getString(c.getColumnIndex(DatabaseConstants.COL_HEADLINE)));
+				Log.i(TAG, c.getString(c.getColumnIndex(DatabaseConstants.COL_FIRST_PUBLISHED)));
+				p.setFirstPublished(c.getString(c.getColumnIndex(DatabaseConstants.COL_FIRST_PUBLISHED)));
+				p.setRead(c.getString(c.getColumnIndex(DatabaseConstants.COL_READ)));
+				p.setStatus(c.getString(c.getColumnIndex(DatabaseConstants.COL_STATUS)));
+				p.setDateReceived(c.getString(c.getColumnIndex(DatabaseConstants.COL_DATE_RECEIVED)));
+				p.setLastUpdated(c.getString(c.getColumnIndex(DatabaseConstants.COL_LAST_UPDATED))); 
+				p.setId(c.getString(c.getColumnIndex(DatabaseConstants.COL_PSIRT_ID)));
+				p.setDatabaseKeyId(c.getInt(c.getColumnIndex(DatabaseConstants.KEY_ID)));
+				p.setImpact(c.getString(c.getColumnIndex(DatabaseConstants.COL_IMPACT)));
+				for(String filterS : filter) {
+					if(filterS.equals(p.getStatus())) {
+						list.add(p);
+					}
+				}
+			} while(c.moveToNext());
+		}
+		psirtDatabase.close();
+		
+		return list;
+	}
+	
 	public class UpdaterServiceBroadcastReceiver extends BroadcastReceiver{
 
 		public static final String UPDATEDATABASE_ACTION = "com.criticalalerts.intent.action.UPDATEDATABASE_ACTION";
@@ -319,6 +334,7 @@ public class UpdaterService extends Service {
 		public static final String UPDATE_STATUS = "update-status"; 
 		public static final String UPDATE_READ = "update-read";
 		public static final String PSIRT_POSITION = "position";
+		public static final String REFRESH = "refresh"; 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			
@@ -331,6 +347,13 @@ public class UpdaterService extends Service {
 				psirtDatabase.updatePSIRTRead(extras);
 			} else if (action.equals(UPDATE_STATUS)) {
 				psirtDatabase.updatePSIRTStatus(extras);
+			} else if (action.equals(REFRESH)) {
+				try {
+					retrievePsirts();
+				} catch (SocketException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 			psirtDatabase.close();

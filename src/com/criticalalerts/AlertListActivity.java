@@ -12,11 +12,13 @@ import java.util.Date;
 
 import com.criticalalerts.data.DatabaseConstants;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.NotificationManager;
 import android.app.TabActivity;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
@@ -25,6 +27,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -36,11 +41,13 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost.TabSpec;
+import android.widget.PopupWindow;
 
 public class AlertListActivity extends ListActivity implements ServiceConnection {
 	public final String TAG = "NewPsirtsActivity";
 	UpdaterService s; 
 	ArrayList<PSIRT> psirtList;
+	Button filterButton; 
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +61,6 @@ public class AlertListActivity extends ListActivity implements ServiceConnection
 		setContentView(R.layout.psirt_list);
 		NotificationManager nm = (NotificationManager) getSystemService (NOTIFICATION_SERVICE);
 		nm.cancel(284775);
-		
 	}
 
 	@Override
@@ -79,9 +85,10 @@ public class AlertListActivity extends ListActivity implements ServiceConnection
 		
 	}
 	
-	private void updateList() {
+	protected void updateList() {
 		// Get the psirts from the service 
-		ArrayList<PSIRT> psirtList = s.getAllPsirts();
+		ArrayList<PSIRT> psirtList = s.getFilteredPsirts(UpdaterService.checked[0], 
+				UpdaterService.checked[1],UpdaterService.checked[2]);
 		ArrayList<String> titles = new ArrayList<String>(psirtList.size());
 		for (PSIRT psirt : psirtList){
     		titles.add(psirt.getHeadline());
@@ -210,6 +217,50 @@ public class AlertListActivity extends ListActivity implements ServiceConnection
 			Log.i(TAG, "clicked");
 		}
 		
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.listmenu, menu);
+	    return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.filterList:
+	        	final CharSequence[] items = {"Unresolved", "Assigned", "Resolved"};
+				boolean[] checkedItems = UpdaterService.checked; 
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle("Select status types to show");
+				builder.setMultiChoiceItems(items, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+						UpdaterService.checked[which] = isChecked; 
+						updateList();
+						
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
+	            return true;
+	        case R.id.settingsButton:
+	        	Intent i = new Intent(); 
+	        	i.setClass(this, Preferences.class);
+	        	startActivity(i);
+	        case R.id.refresh:
+	        	Intent broadcastIntent = new Intent(); 
+				broadcastIntent.setAction(UpdaterService.UpdaterServiceBroadcastReceiver.REFRESH); 
+				Bundle extras = new Bundle(); 
+				extras.putString(UpdaterService.UpdaterServiceBroadcastReceiver.ACTION_TODO, UpdaterService.UpdaterServiceBroadcastReceiver.REFRESH);
+				broadcastIntent.putExtras(extras);
+				sendBroadcast(broadcastIntent);  
+	       default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 	
 }

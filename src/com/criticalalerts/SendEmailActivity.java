@@ -8,13 +8,14 @@ public class SendEmailActivity extends Activity{
 
 	@Override     
 	protected void onCreate(Bundle savedInstanceState) {     
-		super.onCreate(savedInstanceState);  
+		super.onCreate(savedInstanceState);   
 		
 		Bundle extras = this.getIntent().getExtras();
 		
 		final Intent email = new Intent(android.content.Intent.ACTION_SEND);         
 		email.putExtra(android.content.Intent.EXTRA_SUBJECT, extras.getString("subject"));             
 		email.putExtra(android.content.Intent.EXTRA_TEXT, extras.getString("body"));    
+		email.putExtra(android.content.Intent.EXTRA_EMAIL, new String[] { (String) extras.get("email") } );
 		email.setType("plain/text"); 
 		this.startActivityForResult(Intent.createChooser(email, "Sending email to notify correspondant"), 2);         
 	} 
